@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import postgres from 'postgres';
 import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 
-const sql = postgres(process.env.NEXT_PUBLIC__POSTGRES_URL_NON_POOLING!, { ssl: 'require' });
+const sql = postgres(process.env.NEXT_PUBLIC__POSTGRES_URL_NON_POOLING || '', { ssl: 'require' });
 
 async function seedUsers() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -103,6 +103,13 @@ async function seedRevenue() {
 
 export async function GET() {
   try {
+    if (!process.env.NEXT_PUBLIC__POSTGRES_URL_NON_POOLING) {
+      return Response.json(
+        { error: 'Database connection string not configured' },
+        { status: 500 }
+      );
+    }
+
     const result = await sql.begin((sql) => [
       seedUsers(),
       seedCustomers(),

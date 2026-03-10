@@ -9,7 +9,7 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
-const sql = postgres(process.env.NEXT_PUBLIC__POSTGRES_URL_NON_POOLING!, { ssl: 'require' });
+const sql = postgres(process.env.NEXT_PUBLIC__POSTGRES_URL_NON_POOLING || '', { ssl: 'require' });
 
 export async function fetchRevenue() {
   try {
