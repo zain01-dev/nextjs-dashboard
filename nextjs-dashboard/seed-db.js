@@ -1,7 +1,12 @@
 const postgres = require('postgres');
 require('dotenv').config();
 
-const sql = postgres(process.env.NEXT_PUBLIC__POSTGRES_URL_NON_POOLING, { ssl: 'require' });
+const connectionString = process.env.NEXT_PUBLIC__POSTGRES_URL_NON_POOLING || '';
+if (!connectionString) {
+  console.error('ERROR: NEXT_PUBLIC__POSTGRES_URL_NON_POOLING is not defined in environment');
+  process.exit(1);
+}
+const sql = postgres(connectionString, { ssl: 'require' });
 
 async function seed() {
     try {
